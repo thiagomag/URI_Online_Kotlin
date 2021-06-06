@@ -1,5 +1,4 @@
 import java.util.*
-import kotlin.math.min
 
 fun main(args: Array<String>) {
 
@@ -21,52 +20,89 @@ fun main(args: Array<String>) {
     input.next()
     val segFinal = input.nextInt()
 
+    duracaoEvento(diaInicial, horaInicial, minInicial, segInicial, diaFinal, horaFinal, minFinal, segFinal)
+}
 
-    if (diaInicial in 0..30 && horaInicial in 0..24 && minInicial in 0..60 && segInicial in 0..60 && diaFinal in 0..30 && horaFinal in 0..24 && minFinal in 0..60 && segFinal in 0..60) {
-        var duracaoDia = when {
-            diaInicial == diaFinal -> 0
-            minInicial < minFinal -> (diaFinal - diaInicial) - 1
-            else -> diaFinal - diaInicial
-        }
-
-        var duracaoHora = when {
-            horaFinal > horaInicial -> horaFinal - horaInicial
-            horaFinal == horaInicial && minInicial == minFinal && segInicial == segFinal -> 24
-            horaFinal == horaInicial && minInicial < minFinal -> 0
-            horaFinal == horaInicial && minInicial < minFinal && segInicial < segFinal-> 0
-            else -> (24 - horaInicial) + horaFinal
-        }
-
-        var duracaoMin: Int = 0
-
-        when {
-            minFinal > minInicial -> duracaoMin = minFinal - minInicial
-            minFinal == minInicial -> duracaoMin = 0
-            horaFinal == horaInicial && minInicial < minFinal -> duracaoMin = minFinal - minInicial
-            minInicial <= minFinal && segInicial > segFinal -> 60 - ((minInicial - minFinal) + 1)
-            minInicial >= minFinal && segInicial < segFinal -> (60 - minInicial) + minFinal
-            else -> {
-                (60 - minInicial) + minFinal
-                duracaoHora -= 1
+fun duracaoEvento(
+    diaInicial: Int,
+    horaInicial: Int,
+    minInicial: Int,
+    segInicial: Int,
+    diaFinal: Int,
+    horaFinal: Int,
+    minFinal: Int,
+    segFinal: Int
+) {
+    var duracaoDias = 0
+    var duracaoHoras = 0
+    var duracaoMin = 0
+    var duracaoSeg = 0
+    if (diaFinal >= diaInicial) {
+        if (horaFinal >= horaInicial) {
+            if (minFinal >= minInicial) {
+                if (segFinal >= segInicial) {
+                    duracaoDias = diaFinal - diaInicial
+                    duracaoHoras = horaFinal - horaInicial
+                    duracaoMin = minFinal - minInicial
+                    duracaoSeg = segFinal - segInicial
+                } else {
+                    duracaoDias = diaFinal - diaInicial - 1
+                    if (horaInicial == horaFinal) {
+                        duracaoHoras = 24 + horaFinal - horaInicial - 1
+                    } else {
+                        duracaoHoras = horaFinal - horaInicial - 1
+                    }
+                    if (minInicial == minFinal) {
+                        duracaoMin = 60 + minFinal - minInicial - 1
+                    } else {
+                        duracaoMin = minFinal - minInicial - 1
+                    }
+                    duracaoSeg = 60 + segFinal - segInicial
+                }
+            } else {
+                duracaoDias = diaFinal - diaInicial - 1
+                if (horaInicial == horaFinal) {
+                    duracaoHoras = 24 + horaFinal - horaInicial - 1
+                } else {
+                    duracaoHoras = horaFinal - horaInicial - 1
+                }
+                if (segFinal >= segInicial) {
+                    duracaoSeg = segFinal - segInicial
+                    duracaoMin = 60 + minFinal - minInicial
+                } else {
+                    duracaoSeg = 60 + segFinal - segInicial
+                    duracaoMin = 60 + minFinal - minInicial - 1
+                }
+            }
+        } else {
+            duracaoDias = diaFinal - diaInicial - 1;
+            if (segFinal >= segInicial) {
+                if (minFinal >= minInicial) {
+                    duracaoMin = minFinal - minInicial
+                    duracaoSeg = segFinal - segInicial
+                    duracaoHoras = 24 + horaFinal - horaInicial
+                } else {
+                    duracaoMin = 60 + minFinal - minInicial
+                    duracaoSeg = segFinal - segInicial
+                    duracaoHoras = 24 + horaFinal - horaInicial - 1
+                }
+            } else {
+                if (minFinal >= minInicial) {
+                    duracaoMin = minFinal - minInicial - 1
+                    duracaoSeg = 60 + segFinal - segInicial
+                    duracaoHoras = 24 + horaFinal - horaInicial
+                } else {
+                    duracaoMin = 60 + minFinal - minInicial - 1
+                    duracaoSeg = 60 + segFinal - segInicial
+                    duracaoHoras = 24 + horaFinal - horaInicial - 1
+                }
             }
         }
-
-        var duracaoSeg: Int = 0
-
-        when {
-            segFinal > segInicial -> duracaoSeg = segFinal - segInicial
-            segFinal == segInicial -> duracaoSeg = 0
-            horaFinal == horaInicial && minInicial == minFinal && segInicial < segFinal -> duracaoSeg = segFinal - segInicial
-            segInicial > segFinal -> duracaoSeg = (60 - segInicial) + segFinal
-            else -> {
-                (60 - segInicial) + segFinal
-              //  duracaoMin -= 1
-              //  duracaoHora -= 1
-            }
-        }
-        println("$duracaoDia dia(s)\n" +
-                "$duracaoHora hora(s)\n" +
-                "$duracaoMin minuto(s)\n" +
-                "$duracaoSeg segundo(s)")
     }
+    System.out.printf(
+        "%d dia(s)\n" +
+                "%d hora(s)\n" +
+                "%d minuto(s)\n" +
+                "%d segundo(s)\n", duracaoDias, duracaoHoras, duracaoMin, duracaoSeg
+    )
 }
